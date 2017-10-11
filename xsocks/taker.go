@@ -47,7 +47,15 @@ func HttpGet(c chan bool) {
 	c <- true
 }
 
-func getSS0(doub_html string){
+func update_r_item(key string, value string) {
+	if exists, err := client.Exists(key).Result(); err == nil {
+		if exists == 0 {
+			client.Set(key, value, 0).Result()
+		}
+	}
+}
+
+func getSS0(doub_html string) {
 	waitgroup.Add(1)
 
 	reg := regexp.MustCompile(`ss://([^"\s&#]+)`)
@@ -67,11 +75,12 @@ func getSS0(doub_html string){
 
 		subReg := regexp.MustCompile(`([^:@]+)`)
 		items := subReg.FindAllString(string(data), -1)
-		//fmt.Println("000000", items)
+
 		if len(items) == 4 {
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[2], items[3], items[1], items[0], "doub.io")
-			client.Set(items[2], json, 0).Result()
+			//client.Set(items[2], json, 0).Result()
+			update_r_item(items[2], json)
 		}
 	}
 	waitgroup.Done()
@@ -82,7 +91,7 @@ func getSS1(cookie string) {
 
 	doub_html := getHtml(cookie)
 	fmt.Println(doub_html)
-	reg := regexp.MustCompile(`ssr://([^"\s&#]+)`)
+	reg := regexp.MustCompile(`(ss|ssr)://([^"\s&#]+)`)
 
 	for _, row := range reg.FindAllString(doub_html, -1) {
 		s := strings.Split(row, "//")
@@ -103,8 +112,14 @@ func getSS1(cookie string) {
 			password, _ := base64.StdEncoding.DecodeString(items[5] + "==")
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[0], items[1], password, items[3], "doub.io")
-			client.Set(items[0], json, 0).Result()
+			//client.Set(items[0], json, 0).Result()
+			update_r_item(items[0], json)
+		} else if len(items) == 4 {
+			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+				items[2], items[3], items[1], items[0], "doub.io")
+			update_r_item(items[2], json)
 		}
+
 	}
 	waitgroup.Done()
 }
@@ -132,7 +147,8 @@ func getSS3() {
 		for _, items := range reg.FindAllStringSubmatch(body_as_str, -1) {
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[1], items[2], items[3], strings.ToLower(items[4]), "ss3")
-			client.Set(items[1], json, 0).Result()
+			//client.Set(items[1], json, 0).Result()
+			update_r_item(items[1], json)
 		}
 	}
 	waitgroup.Done()
@@ -161,7 +177,8 @@ func getSS4() {
 		for _, items := range reg.FindAllStringSubmatch(body_as_str, -1) {
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[1], items[2], items[3], strings.ToLower(items[4]), "ss4")
-			client.Set(items[1], json, 0).Result()
+			//client.Set(items[1], json, 0).Result()
+			update_r_item(items[1], json)
 		}
 	}
 	waitgroup.Done()
@@ -181,7 +198,8 @@ func getSS5() {
 		for _, items := range reg.FindAllStringSubmatch(body_as_str, -1) {
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[1], items[2], items[3], strings.ToLower(items[4]), "ss5")
-			client.Set(items[1], json, 0).Result()
+			//client.Set(items[1], json, 0).Result()
+			update_r_item(items[1], json)
 		}
 	}
 	waitgroup.Done()
@@ -202,7 +220,8 @@ func getSS6() {
 		for _, items := range reg.FindAllStringSubmatch(body_as_str, -1) {
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[1], items[2], items[3], strings.ToLower(items[4]), "ss6")
-			client.Set(items[1], json, 0).Result()
+			//client.Set(items[1], json, 0).Result()
+			update_r_item(items[1], json)
 		}
 	}
 	waitgroup.Done()
@@ -212,11 +231,13 @@ func getSS7() {
 	waitgroup.Add(1)
 	json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 		"ss1.ubox.co", "8388", "password", "aes-256-cfb", "ss7")
-	client.Set("ss1.ubox.co", json, 0).Result()
+	//client.Set("ss1.ubox.co", json, 0).Result()
+	update_r_item("ss1.ubox.co", json)
 
 	json2 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 		"45.76.216.97", "8989", "wf123", "aes-256-cfb", "ss77")
-	client.Set("45.76.216.97", json2, 0).Result()
+	//client.Set("45.76.216.97", json2, 0).Result()
+	update_r_item("45.76.216.97", json2)
 	waitgroup.Done()
 }
 
@@ -267,7 +288,8 @@ func getSS10() {
 		for _, items := range reg.FindAllStringSubmatch(body_as_str, -1) {
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[2], items[3], items[4], strings.ToLower(items[5]), "ss10-"+items[1])
-			client.Set(items[2], json, 0).Result()
+			//client.Set(items[2], json, 0).Result()
+			update_r_item(items[2], json)
 		}
 	}
 
@@ -305,7 +327,8 @@ func parse_qrcode(url string, id string) {
 
 				json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 					s2[1], s1[2], s2[0], s1[0], id)
-				client.Set(s2[1], json, 0).Result()
+				//client.Set(s2[1], json, 0).Result()
+				update_r_item(s2[1], json)
 			}
 		}
 	}
@@ -324,7 +347,8 @@ func set_ss(url string) {
 		for _, items := range reg.FindAllStringSubmatch(body_as_str, -1) {
 			json := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
 				items[1], items[2], items[3], strings.ToLower(items[4]), "Alvin9999")
-			client.Set(items[1], json, 0).Result()
+			//client.Set(items[1], json, 0).Result()
+			update_r_item(items[1], json)
 		}
 	}
 }
