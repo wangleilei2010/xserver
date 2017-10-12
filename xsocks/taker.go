@@ -238,6 +238,31 @@ func getSS7() {
 		"45.76.216.97", "8989", "wf123", "aes-256-cfb", "ss77")
 	//client.Set("45.76.216.97", json2, 0).Result()
 	update_r_item("45.76.216.97", json2)
+
+	json_nie_pan_0 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"185.159.130.122", "10086", "niepan", "chacha20", "niepan")
+	//client.Set("45.76.216.97", json2, 0).Result()
+	update_r_item("185.159.130.122", json_nie_pan_0)
+
+	json_nie_pan_1 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"45.62.211.77", "10086", "niepan", "chacha20", "niepan")
+	//client.Set("45.76.216.97", json2, 0).Result()
+	update_r_item("45.62.211.77", json_nie_pan_1)
+
+	json_nie_pan_2 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"45.62.211.66", "10086", "niepan", "chacha20", "niepan")
+	//client.Set("45.76.216.97", json2, 0).Result()
+	update_r_item("45.62.211.66", json_nie_pan_2)
+
+	json_nie_pan_3 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"45.62.211.43", "10086", "niepan", "chacha20", "niepan")
+	//client.Set("45.76.216.97", json2, 0).Result()
+	update_r_item("45.62.211.43", json_nie_pan_3)
+
+	json_nie_pan_4 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"64.137.255.105", "10086", "niepan", "chacha20", "niepan")
+	//client.Set("45.76.216.97", json2, 0).Result()
+	update_r_item("64.137.255.105", json_nie_pan_4)
 	waitgroup.Done()
 }
 
