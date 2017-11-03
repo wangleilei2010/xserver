@@ -60,6 +60,8 @@ func getSS0(doub_html string) {
 
 	reg := regexp.MustCompile(`ss://([^"\s&#]+)`)
 
+	doub_html = getHtml("")
+
 	for _, row := range reg.FindAllString(doub_html, -1) {
 		s := strings.Split(row, "//")
 		data, err := base64.StdEncoding.DecodeString(s[1])
@@ -263,6 +265,24 @@ func getSS7() {
 		"64.137.255.105", "10086", "niepan", "chacha20", "niepan")
 	//client.Set("45.76.216.97", json2, 0).Result()
 	update_r_item("64.137.255.105", json_nie_pan_4)
+
+	//https://bbs.freemz.tk/t/1
+	json_freemz_2 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"ss2.kfj.cc", "8989", "0123456789", "aes-256-cfb", "freemz")
+	update_r_item("ss2.kfj.cc", json_freemz_2)
+
+	json_freemz_3 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"ss3.kfj.cc", "8989", "0123456789", "aes-256-cfb", "freemz")
+	update_r_item("ss3.kfj.cc", json_freemz_3)
+
+	json_freemz_4 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"ss4.kfj.cc", "8989", "0123456789", "aes-256-cfb", "freemz")
+	update_r_item("ss4.kfj.cc", json_freemz_4)
+
+	json_freemz_5 := fmt.Sprintf("{\"server\": \"%s\", \"server_port\": \"%s\", \"password\": \"%s\",\"method\": \"%s\", \"remarks\":\"%s\"}",
+		"ss5.kfj.cc", "8989", "0123456789", "aes-256-cfb", "freemz")
+	update_r_item("ss5.kfj.cc", json_freemz_5)
+
 	waitgroup.Done()
 }
 
@@ -390,7 +410,9 @@ func getHtml(cookie string) string {
 	`Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36`,
 		"Cache-Control": "max-age=0",
 		"Upgrade-Insecure-Requests": "1"}
-	header["Cookie"] = cookie
+	if cookie != "" {
+		header["Cookie"] = cookie
+	}
 
 	resp := httpRequest(client, "GET", "https://doub.bid/sszhfx/", nil, header)
 	return resp

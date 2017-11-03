@@ -95,6 +95,19 @@ func Map(vs []string, f func(string) string) []string {
 	return vsm
 }
 
+func random_key() string {
+	rnd_key, err := client.RandomKey().Result()
+
+	if err != nil {
+		c := make(chan bool)
+		go HttpGet(c)
+		time.Sleep(1)
+		rnd_key, _ = client.RandomKey().Result()
+	}
+
+	return rnd_key
+}
+
 func HttpServe(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	good_servers, _ := config_client.LRange("good_servers", 0, -1).Result()
@@ -151,7 +164,7 @@ func HttpServe(w http.ResponseWriter, r *http.Request) {
 
 	var real_good_servers = []string{}
 	var rnd_key string
-	var err interface{}
+	//var err interface{}
 
 	for _, s := range good_servers {
 		exists, _ := Contains(s, keys)
@@ -166,17 +179,22 @@ func HttpServe(w http.ResponseWriter, r *http.Request) {
 		randIndex := rand.Intn(len(real_good_servers))
 		rnd_key = real_good_servers[randIndex]
 	} else {
-		rnd_key, err = client.RandomKey().Result()
-
-		if err != nil {
-			c := make(chan bool)
-			go HttpGet(c)
-			time.Sleep(1)
-			rnd_key, _ = client.RandomKey().Result()
-		}
+		//rnd_key, err = client.RandomKey().Result()
+		//
+		//if err != nil {
+		//	c := make(chan bool)
+		//	go HttpGet(c)
+		//	time.Sleep(1)
+		//	rnd_key, _ = client.RandomKey().Result()
+		//}
+		rnd_key = random_key()
 	}
 
 	rjson, _ := client.Get(rnd_key).Result()
+	if rjson == "" {
+		rnd_key = random_key()
+		rjson, _ = client.Get(rnd_key).Result()
+	}
 
 	client2.Set(addr_info[0]+"#"+computer_id, rnd_key, 0).Result()
 
